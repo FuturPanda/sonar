@@ -10,13 +10,14 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^4.1.0",
     "@astrojs/check": "^0.3.3",
     "@astrojs/vercel": "^6.1.0",
     "@supabase/supabase-js": "^2.39.1",
+    "astro": "^4.1.0",
     "base64-arraybuffer": "^1.0.2",
     "crypto-js": "^4.2.0",
     "jsonwebtoken": "^9.0.2",
+    "openai": "^4.24.1",
     "puppeteer-core": "^21.7.0"
   }
 }
