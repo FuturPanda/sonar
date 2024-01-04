@@ -2,11 +2,10 @@ import puppeteer, { ElementHandle } from "puppeteer-core";
 //import puppeteer from "puppeteer";
 
 import { supabase } from "../../../supabase_client/client";
-import type { APIRoute } from "astro";
 import OpenAI from "openai";
 import { decode } from "base64-arraybuffer";
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST = async ({ request }) => {
   const { author, url } = await request.json();
 
   let { data: post, error: errorSelectingPostByUrl } = await supabase

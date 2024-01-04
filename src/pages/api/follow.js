@@ -1,8 +1,8 @@
 import { supabase } from "../../supabase_client/client";
-import type { APIRoute } from "astro";
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET = async ({ request }) => {
   const { userId } = await request.json();
+
   let { data: followers, error } = await supabase
     .from("followers")
     .select("*")
@@ -21,7 +21,7 @@ export const GET: APIRoute = async ({ request }) => {
   }
 };
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST = async ({ request }) => {
   const { userId, followerId } = await request.json();
 
   const { data: following, error: errorFollow } = await supabase
