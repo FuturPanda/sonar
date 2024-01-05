@@ -12,12 +12,30 @@ export const GET: APIRoute = async ({ request }) => {
   if (userAuthenticated.length > 0) {
     let { data: posts, error } = await supabase
       .from("posts")
-      .select("*, author(profiles(username, avatar_url)), users(email)");
+      .select("*, author(profiles(username, avatar_url)), reactions(*)");
+
+    /*let { data: upVotes, error: errorUpvotes } = await supabase
+      .from("posts")
+      .select("id, reactions(*), count:reactions(count)")
+      .eq("reactions.vote", "UPVOTE");
+
+    let { data: downVotes, error: errorDownvotes } = await supabase
+      .from("posts")
+      .select("id, reactions(*), count:reactions(count)")
+      .eq("reactions.vote", "DOWNVOTE");*/
+
     if (!error) {
-      return new Response(JSON.stringify({ posts: posts }), {
-        status: 200,
-        headers: { "Content-type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({
+          posts: posts,
+          //upvotes: upVotes,
+          //downvotes: downVotes,
+        }),
+        {
+          status: 200,
+          headers: { "Content-type": "application/json" },
+        }
+      );
     } else {
       return new Response(JSON.stringify({ message: error.message }), {
         status: 400,
