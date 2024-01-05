@@ -8,10 +8,11 @@ export const GET: APIRoute = async ({ request }) => {
     .from("users")
     .select("*")
     .eq("token", token);
+
   if (userAuthenticated.length > 0) {
     let { data: posts, error } = await supabase
       .from("posts")
-      .select("*, author(profiles(username, avatar_url))");
+      .select("*, author(profiles(username, avatar_url)), users(email)");
     if (!error) {
       return new Response(JSON.stringify({ posts: posts }), {
         status: 200,
