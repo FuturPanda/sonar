@@ -11,9 +11,7 @@ export const GET: APIRoute = async ({ params, request }) => {
   if (userAuthenticated.length > 0) {
     let { data: post, error } = await supabase
       .from("posts")
-      .select(
-        "*, author(profiles(username, avatar_url)), reactions(*), comments(*, profiles(*))"
-      )
+      .select("*, author(profiles(*)), reactions(*), comments(*, profiles(*))")
       .eq("id", id);
     if (!error) {
       return new Response(
