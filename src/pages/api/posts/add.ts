@@ -75,7 +75,7 @@ export const POST = async ({ request }) => {
               const { data: postUpdated, error: updatedPostError } =
                 await supabase
                   .from("posts")
-                  .update({ url_image: urlImage })
+                  .update({ url_image: urlImage.publicUrl })
                   .eq("id", postCreated[0].id)
                   .select();
               if (postUpdated) {
@@ -225,7 +225,7 @@ const getHtmlContentFromUrl = async (url: string) => {
 
 const requestOpenAiAPI = async (content) => {
   const openai = new OpenAI({
-    apiKey: "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",
+    apiKey: process.env.OPEN_AI_KEY,
   });
   console.log;
   const completion = await openai.chat.completions.create({
@@ -240,7 +240,7 @@ const requestOpenAiAPI = async (content) => {
         Some information isn't relevant. Look at the text in triple quote to find what the matter of the article really is.
         Step 2 - Summarize this text in one sentence in English with the prefix "tldr : " 
         Step 3 - Translate the summary from Step 1 into French with the prefix "-- translation : " 
-        Step 4 - Choose one one reflecting the broad tech category where the article lies"-- tag : " 
+        Step 4 - Choose one word reflecting the broad tech category where the article lies"-- tag : " 
         Step 5 - Give a fun ad engaging title to your summary with the prefix "-- title : " 
 
         `,
