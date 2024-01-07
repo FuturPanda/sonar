@@ -6,4 +6,8 @@ import vercel from "@astrojs/vercel/serverless";
 export default defineConfig({
   output: "server",
   adapter: vercel(),
+  define: {
+    "process.env": process.env,
+    VITE_OPEN_AI_KEY: process.env.VITE_OPEN_AI_KEY,
+  },
 });
