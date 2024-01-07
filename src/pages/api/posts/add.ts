@@ -62,21 +62,41 @@ export const POST = async ({ request }) => {
               .from("post_tag")
               .insert([{ post: postCreated[0].id, tag: tags[0].id }])
               .select();
-            const { data, error } = await supabase.storage
+            const { data: pathImage, error } = await supabase.storage
               .from("page_screenshot")
               .upload(`public/${postCreated[0].id}.png`, decode(screenShot), {
                 contentType: "image/png",
               });
             if (!errorInsertPost && !errorUpsertTags && !errorInsertPostTags) {
-              return new Response(
-                JSON.stringify({
-                  post: postCreated[0],
-                }),
-                {
-                  status: 200,
-                  headers: { "Content-type": "application/json" },
-                }
-              );
+              const { data: urlImage } = supabase.storage
+                .from("public-bucket")
+                .getPublicUrl("folder/avatar1.png");
+
+              const { data: postUpdated, error: updatedPostError } =
+                await supabase
+                  .from("posts")
+                  .update({ url_image: urlImage })
+                  .eq("id", postCreated[0].id)
+                  .select();
+              if (postUpdated) {
+                return new Response(
+                  JSON.stringify({
+                    post: postUpdated[0],
+                  }),
+                  {
+                    status: 200,
+                    headers: { "Content-type": "application/json" },
+                  }
+                );
+              } else {
+                return new Response(
+                  JSON.stringify({ message: "error.message" }),
+                  {
+                    status: 400,
+                    headers: { "Content-type": "application/json" },
+                  }
+                );
+              }
             } else {
               return new Response(
                 JSON.stringify({ message: "error.message" }),
