@@ -225,7 +225,7 @@ const getHtmlContentFromUrl = async (url: string) => {
 
 const requestOpenAiAPI = async (content) => {
   const openai = new OpenAI({
-    apiKey: process.env.VITE_OPEN_AI_KEY,
+    apiKey: import.meta.env.VITE_OPEN_AI_KEY,
   });
   console.log;
   const completion = await openai.chat.completions.create({
