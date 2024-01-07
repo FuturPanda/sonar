@@ -12,7 +12,7 @@ export const GET: APIRoute = async ({ params, request }) => {
     let { data: post, error } = await supabase
       .from("posts")
       .select(
-        "*, author(profiles(username, avatar_url)), reactions(*), comments(*)"
+        "*, author(profiles(username, avatar_url)), reactions(*), comments(*, profiles(*))"
       )
       .eq("id", id);
     if (!error) {
@@ -65,18 +65,4 @@ export const PUT: APIRoute = async ({ params, request }) => {
       headers: { "Content-type": "application/json" },
     });
   }
-};
-
-let reponseDto = {
-  course_id: "3",
-  questions: [
-    {
-      question1: "blabla",
-      reponses: [
-        { reponse1: "pijpij" },
-        { reponse2: "pijpij" },
-        { reponse1: "pijpij" },
-      ],
-    },
-  ],
 };
