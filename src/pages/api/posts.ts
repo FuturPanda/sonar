@@ -12,7 +12,8 @@ export const GET: APIRoute = async ({ request }) => {
   if (userAuthenticated.length > 0) {
     let { data: posts, error } = await supabase
       .from("posts")
-      .select("*, author(profiles(*)), reactions(*), comments(*, profiles(*))");
+      .select("*, author(profiles(*)), reactions(*), comments(*, profiles(*))")
+      .order("created_at", { ascending: false });
 
     /*let { data: upVotes, error: errorUpvotes } = await supabase
       .from("posts")
