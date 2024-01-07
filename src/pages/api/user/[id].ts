@@ -1,17 +1,19 @@
 import { supabase } from "../../../supabase_client/client";
 import type { APIRoute } from "astro";
 
-export const GET: APIRoute = async ({ params, request }) => {
-  const id = params.id;
+export const GET: APIRoute = async ({ request }) => {
+  let userId = request.headers.get("userId");
+  let token = request.headers.get("token");
+
   let { data: profiles, error } = await supabase
     .from("profiles")
     .select()
-    .eq("id", id);
+    .eq("id", userId);
   if (!error) {
     return new Response(
       JSON.stringify({
         profile: profiles,
-        id: id,
+        id: userId,
       }),
       {
         status: 200,
