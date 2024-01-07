@@ -13,7 +13,7 @@ export const GET: APIRoute = async ({ request }) => {
     let { data: posts, error } = await supabase
       .from("posts")
       .select(
-        "*, author(profiles(username, avatar_url)), reactions(*), comments(*)"
+        "*, author(profiles(username, avatar_url)), reactions(*), comments(*, profiles(*))"
       );
 
     /*let { data: upVotes, error: errorUpvotes } = await supabase
