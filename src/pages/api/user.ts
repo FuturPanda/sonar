@@ -12,7 +12,7 @@ export const GET: APIRoute = async ({ request }) => {
   if (userAuthenticated.length > 0) {
     let { data: profiles, error } = await supabase
       .from("profiles")
-      .select("*, roles_permissions:users(roles(name, permissions(name)))")
+      .select("*,roles_permissions:users(roles(name, permissions(name)))")
       .eq("id", userId);
     if (!error) {
       return new Response(

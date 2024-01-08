@@ -1,15 +1,22 @@
 import { supabase } from "../../supabase_client/client";
 
 export const GET = async ({ request }) => {
-  const { userId } = await request.json();
-
+  let followerId = request.headers.get("follower_id");
+  let token = request.headers.get("token");
+  let followeeId = request.headers.get("followee_id");
   let { data: followers, error } = await supabase
     .from("followers")
     .select("*")
-    .eq("user", userId);
+    .match({ follower: followerId, followee: followeeId });
+
+  /*
+  let { data: followers, error } = await supabase
+    .from("followers")
+    .select("*")
+    .or(`followee.eq.${userId}, follower.eq.${userId}`);*/
 
   if (!error) {
-    return new Response(JSON.stringify({ followers: followers }), {
+    return new Response(JSON.stringify({ relations: followers }), {
       status: 200,
       headers: { "Content-type": "application/json" },
     });
@@ -34,13 +41,13 @@ export const POST = async ({ request }) => {
       .from("followers")
       .select("is_following")
       .eq("follower", followerId)
-      .eq("user", followeeId);
+      .eq("followee", followeeId);
 
     const { data: followResponse, error: errorUpsert } = await supabase
       .from("followers")
       .upsert([
         {
-          user: followeeId,
+          followee: followeeId,
           follower: followerId,
           is_following:
             following?.length < 0 ? true : !following[0]?.is_following,
