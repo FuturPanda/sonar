@@ -22,35 +22,48 @@ export const GET = async ({ request }) => {
 };
 
 export const POST = async ({ request }) => {
-  const { userId, followerId } = await request.json();
+  const { followeeId, followerId, token } = await request.json();
 
-  const { data: following, error: errorFollow } = await supabase
-    .from("followers")
-    .select("is_following")
-    .eq("follower", followerId)
-    .eq("user", userId);
+  let { data: userAuthenticated, error: errorLogin } = await supabase
+    .from("users")
+    .select("*")
+    .eq("token", token);
 
-  const { data, error: errorUpsert } = await supabase
-    .from("followers")
-    .upsert([
-      {
-        user: userId,
-        follower: followerId,
-        is_following: following.length > 0 ? true : !following[0]?.is_following,
-      },
-    ])
-    .select();
+  if (userAuthenticated.length > 0) {
+    const { data: following, error: errorFollow } = await supabase
+      .from("followers")
+      .select("is_following")
+      .eq("follower", followerId)
+      .eq("user", followeeId);
 
-  if (!errorFollow && !errorUpsert) {
-    return new Response(
-      JSON.stringify({
-        data: data,
-      }),
-      {
-        status: 200,
+    const { data: followResponse, error: errorUpsert } = await supabase
+      .from("followers")
+      .upsert([
+        {
+          user: followeeId,
+          follower: followerId,
+          is_following:
+            following?.length < 0 ? true : !following[0]?.is_following,
+        },
+      ])
+      .select();
+
+    if (!errorFollow && !errorUpsert) {
+      return new Response(
+        JSON.stringify({
+          follow_state: followResponse[0],
+        }),
+        {
+          status: 200,
+          headers: { "Content-type": "application/json" },
+        }
+      );
+    } else {
+      return new Response(JSON.stringify({ message: "error.message" }), {
+        status: 400,
         headers: { "Content-type": "application/json" },
-      }
-    );
+      });
+    }
   } else {
     return new Response(JSON.stringify({ message: "error.message" }), {
       status: 400,
