@@ -16,7 +16,7 @@ export const GET = async ({ request }) => {
     .or(`followee.eq.${userId}, follower.eq.${userId}`);*/
 
   if (!error) {
-    return new Response(JSON.stringify({ relations: followers }), {
+    return new Response(JSON.stringify({ relations: followers[0] }), {
       status: 200,
       headers: { "Content-type": "application/json" },
     });
