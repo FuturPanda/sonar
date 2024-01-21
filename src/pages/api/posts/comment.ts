@@ -12,7 +12,7 @@ export const POST = async ({ request }) => {
   if (!error) {
     return new Response(
       JSON.stringify({
-        comment: data[0],
+        response: data[0],
       }),
       {
         status: 200,

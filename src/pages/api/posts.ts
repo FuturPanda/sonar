@@ -97,7 +97,7 @@ export const POST: APIRoute = async ({ request }) => {
 };
 
 export const PUT: APIRoute = async ({ request }) => {
-  const { token, id, post }: updatePostDto = await request.json();
+  const { token, id, post } = await request.json();
 
   let { data: idUser, error: userError } = await supabase
     .from("users")
@@ -112,12 +112,44 @@ export const PUT: APIRoute = async ({ request }) => {
         url: post.url,
         tldr: post.tldr,
         title: post.title,
+        url_image: post.url_image,
       })
       .eq("id", id)
       .select();
 
     if (!error) {
       return new Response(JSON.stringify({ userInfo: data }), {
+        status: 200,
+        headers: { "Content-type": "application/json" },
+      });
+    } else {
+      return new Response(JSON.stringify({ message: error.message }), {
+        status: 400,
+        headers: { "Content-type": "application/json" },
+      });
+    }
+  } else {
+    return new Response(JSON.stringify({ message: "Unhautorized" }), {
+      status: 401,
+      headers: { "Content-type": "application/json" },
+    });
+  }
+};
+
+export const DELETE: APIRoute = async ({ request }) => {
+  let token = request.headers.get("token");
+  let idPost = request.headers.get("id_post");
+
+  let { data: idUser, error: userError } = await supabase
+    .from("users")
+    .select("id")
+    .eq("token", token);
+
+  if (!userError && idUser.length > 0) {
+    const { error } = await supabase.from("posts").delete().eq("id", idPost);
+
+    if (!error) {
+      return new Response(null, {
         status: 200,
         headers: { "Content-type": "application/json" },
       });
