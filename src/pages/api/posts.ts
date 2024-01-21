@@ -145,23 +145,16 @@ export const DELETE: APIRoute = async ({ request }) => {
     .select("id")
     .eq("token", token);
 
-  if (!userError && idUser.length > 0) {
-    const { error } = await supabase.from("posts").delete().eq("id", idPost);
+  const { error } = await supabase.from("posts").delete().eq("id", idPost);
 
-    if (!error) {
-      return new Response(null, {
-        status: 200,
-        headers: { "Content-type": "application/json" },
-      });
-    } else {
-      return new Response(JSON.stringify({ message: error.message }), {
-        status: 400,
-        headers: { "Content-type": "application/json" },
-      });
-    }
+  if (!error) {
+    return new Response(null, {
+      status: 200,
+      headers: { "Content-type": "application/json" },
+    });
   } else {
-    return new Response(JSON.stringify({ message: "Unhautorized" }), {
-      status: 401,
+    return new Response(JSON.stringify({ message: error.message }), {
+      status: 400,
       headers: { "Content-type": "application/json" },
     });
   }
