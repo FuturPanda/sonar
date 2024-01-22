@@ -58,7 +58,7 @@ export const GET: APIRoute = async ({ request }) => {
 
 export const POST: APIRoute = async ({ request }) => {
   let token = request.headers.get("token");
-  const { author, url, title, tldr, imageUrl } = await request.json();
+  const { author, url, title, tldr, image_url } = await request.json();
 
   let { data: idUser, error: userError } = await supabase
     .from("users")
@@ -73,7 +73,7 @@ export const POST: APIRoute = async ({ request }) => {
         url: url,
         tldr: tldr,
         title: title,
-        url_image: imageUrl,
+        url_image: image_url,
       })
       .select();
 
