@@ -6,8 +6,6 @@ export const POST = async ({ request }) => {
     .from("comments")
     .insert([{ post_id: idPost, comment: comment, user_id: idUser }])
     .select();
-  console.log(data);
-  console.log(error);
 
   if (!error) {
     return new Response(
